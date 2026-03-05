@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Tarea extends Model
+{ 
+    use HasFactory;
+    //Solo permito que se guarden estos tres campos. 
+    // Si alguien intenta mandar otra cosa, ignoralo
+    protected $fillable = ['nombre', 'completada', 'prioridad','categoria'];
+}
