@@ -1,4 +1,16 @@
-
+@if ($errors->any())
+    <div class="mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div class="bg-red-50/50 backdrop-blur-sm border border-red-100 p-4 rounded-2xl">
+            <ul class="text-red-700 text-xs font-bold space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li class="flex items-center gap-2">
+                        <span class="w-1 h-1 bg-red-500 rounded-full"></span> {{ $error }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+@endif
 <form action="{{ url('/guardar-tarea') }}" method="POST" id="form-tarea"
     onsubmit="document.getElementById('btn-añadir').disabled = true; document.getElementById('btn-añadir').innerText = '...';"
     class="group bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row gap-2 mb-12 transition-all focus-within:shadow-xl focus-within:shadow-blue-500/5 focus-within:border-blue-200">
