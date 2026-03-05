@@ -1,8 +1,9 @@
-{{-- Formulario de Creación con Protección Anti-Duplicados --}}
+
 <form action="{{ url('/guardar-tarea') }}" method="POST" id="form-tarea"
     onsubmit="document.getElementById('btn-añadir').disabled = true; document.getElementById('btn-añadir').innerText = '...';"
     class="group bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row gap-2 mb-12 transition-all focus-within:shadow-xl focus-within:shadow-blue-500/5 focus-within:border-blue-200">
     @csrf
+    {{-- -esto csrf da seguridad para ataques maliciosos de terceros --}}
 
     <div class="flex-grow relative">
         <div
