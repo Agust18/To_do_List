@@ -23,9 +23,7 @@
                 <option value="Media">Media</option>
                 <option value="Baja">Baja</option>
             </select>
-            <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none text-slate-400">
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
+            
         </div>
 
         <div class="relative">
@@ -37,9 +35,7 @@
                 <option value="Estudio">📚 Estudio</option>
                 <option value="Compras">🛒 Compras</option>
             </select>
-            <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none text-slate-400">
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
+            
         </div>
     </div>
 

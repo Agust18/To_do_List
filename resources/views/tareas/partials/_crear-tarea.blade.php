@@ -11,7 +11,7 @@
         </div>
     </div>
 @endif
-<form action="{{ url('/guardar-tarea') }}" method="POST" id="form-tarea"
+<form action="{{ route("tareas.store") }}" method="POST" id="form-tarea"
     onsubmit="document.getElementById('btn-añadir').disabled = true; document.getElementById('btn-añadir').innerText = '...';"
     class="group bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-col lg:flex-row gap-2 mb-12 transition-all focus-within:shadow-xl focus-within:shadow-blue-500/5 focus-within:border-blue-200">
     @csrf
@@ -32,16 +32,20 @@
     <div class="hidden lg:block w-px h-8 bg-slate-100 self-center"></div>
 
     <div class="flex gap-2 p-1">
-        <select name="categoria"
-            class="h-10 px-3 rounded-lg text-xs font-bold bg-slate-50 text-slate-500 border-none outline-none cursor-pointer hover:bg-slate-100 transition-colors appearance-none">
-            <option value="General">General</option>
-            <option value="Trabajo">Trabajo</option>
-            <option value="Estudio">Estudio</option>
-            <option value="Compras">Compras</option>
-        </select>
+        <div class="relative inline-block">
+            <select name="categoria"
+                class="h-10 pl-3 pr-10 rounded-lg text-xs font-bold bg-slate-50 text-slate-500 border-none outline-none cursor-pointer hover:bg-slate-100 transition-colors appearance-none w-full">
+                <option value="General">General</option>
+                <option value="Trabajo">Trabajo</option>
+                <option value="Estudio">Estudio</option>
+                <option value="Compras">Compras</option>
+            </select>
+
+           
+        </div>
 
         <select name="prioridad"
-            class="h-10 px-3 rounded-lg text-xs font-bold outline-none cursor-pointer transition-all border-none appearance-none
+            class="h-10 pl-3 pr-10 rounded-lg text-xs font-bold outline-none cursor-pointer transition-all border-none appearance-none
                 {{ $errors->has('prioridad') ? 'bg-red-100 text-red-600' : 'bg-slate-50 text-slate-500 hover:bg-slate-100' }}">
             <option value="Baja" {{ old('prioridad') == 'Baja' ? 'selected' : '' }}>Baja</option>
             <option value="Media" {{ old('prioridad') == 'Media' ? 'selected' : '' }}>Media</option>

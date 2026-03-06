@@ -13,7 +13,8 @@ class TareaController extends Controller
     // Muestra las tareas
     public function index(Request $request)
     {
-        $query = Tarea::query();
+        $query = auth()->user()->tareas();
+
         // Usamos filled() para verificar que tenga un valor (Alta, Media o Baja)
         // Si es "Todas", filled() devuelve false y no aplica el filtro.
         // Si el usuario eligió una prioridad en el filtro
@@ -21,7 +22,7 @@ class TareaController extends Controller
             $query->where("prioridad", $request->ver_prioridad);
         }
 
-         if ($request->filled("buscar")) {
+        if ($request->filled("buscar")) {
             $query->where("nombre", "LIKE","%" .$request->buscar."%");
         }
 
@@ -32,15 +33,18 @@ class TareaController extends Controller
         $tareas = $query->orderByRaw("FIELD(prioridad, 'Alta', 'Media', 'Baja') ASC")
                     ->orderBy('created_at', 'desc') 
                     ->get();
+       
 
-        return view('hola', compact('tareas'));
+        return view('tareas.index', compact('tareas'));
+
+        // return view('hola', compact('tareas'));
     }
 
     // Guarda una tarea nueva
     public function store(Request $request)
     {
         $reglas = [
-            "tarea" => 'required|min:3|max:50|unique:tareas,nombre',
+            "tarea" => 'required|min:3|max:50',
             "prioridad" => "required|in:Alta,Media,Baja",
             "categoria" => "required"
         ];
@@ -53,13 +57,12 @@ class TareaController extends Controller
         ];
         $request->validate($reglas, $mensajes);
 
-        Tarea::create([
-            "nombre" => $request->tarea,
-            "prioridad" => $request->prioridad,
-            "categoria" => $request->categoria,
-            "completada" => false
-
-        ]);
+        auth()->user()->tareas()->create([
+        "nombre" => $request->tarea,
+        "prioridad" => $request->prioridad,
+        "categoria" => $request->categoria,
+        "completada" => false
+    ]);
 
 
         // $nueva = new Tarea();
@@ -67,13 +70,15 @@ class TareaController extends Controller
         // $nueva->completada = false; // Por defecto no está lista
         // $nueva->save();
 
-        return redirect()->back()->with('success', '¡Tarea añadida!');
+        // return redirect()->back()->with('success', '¡Tarea añadida!');
+        // CAMBIO: El nombre de la ruta ahora es 'tareas.index'
+    return redirect()->route('tareas.index')->with('success', '¡Tarea añadida!');
     }
 
     // Borra la tarea (Esto arregla el error de la ruta /borrar-tarea)
     public function destroy($id)
     {
-        $tarea = Tarea::findOrFail($id)->delete();
+        $tarea = auth()->user()->tareas()->findOrFail($id)->delete();
         
         return redirect()->back()->with('status', 'Tarea eliminada.');
     }
@@ -81,7 +86,7 @@ class TareaController extends Controller
 
     public function marcarCompletada($id)
     {
-        $tarea = Tarea::find($id);
+        $tarea = auth()->user()->tareas()->find($id);
         if ($tarea) {
             // Si estaba completada la pone en false, y viceversa
             $tarea->completada = !$tarea->completada;
@@ -92,21 +97,21 @@ class TareaController extends Controller
 
     public function edit($id)
     {
-        $tarea = Tarea::findOrFail($id);
-        return view("editar", compact("tarea"));
+        $tarea = auth()->user()->tareas()->findOrFail($id);
+        return view("tareas.editar", compact("tarea"));
     }
 
 
     public function update(Request $request, $id)
     {
         //buscamos la tarea primero
-        $tarea = Tarea::findOrFail($id);
+        $tarea = $tarea = auth()->user()->tareas()->findOrFail($id);
 
         //las validaciones
         $reglas = [
             // El id al final de 'unique' le dice a Laravel: 
             // Ignorá esta tarea específica al buscar duplicados
-            "nombre" => "required|min:3|max:50|unique:tareas,nombre," . $id,
+            "nombre" => "required|min:3|max:50|unique:tareas,nombre,".$id,
             "prioridad" => "required|in:Alta,Media,Baja",
             "categoria" => "required"
         ];
@@ -128,7 +133,7 @@ class TareaController extends Controller
             "categoria" => $request->categoria,
         ]);
 
-        return redirect("/mis-tareas")->with("success", "Tarea actualizada correctamente");
+        return redirect()->route("tareas.index")->with("success", "Tarea actualizada correctamente");
     }
 
 
