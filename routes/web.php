@@ -3,6 +3,7 @@ use App\Http\Controllers\TareaController;
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 
 //si esta log muestra sus tareas y sino mandalo al login
@@ -26,7 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    
+    //acciones de categoria
+    Route::resource('categories', CategoryController::class);
 
     Route::get('/dashboard', function () {
         $user = auth()->user();

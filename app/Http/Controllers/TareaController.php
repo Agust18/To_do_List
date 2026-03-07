@@ -13,7 +13,7 @@ class TareaController extends Controller
     // Muestra las tareas
     public function index(Request $request)
     {
-        $query = auth()->user()->tareas();
+        $query = auth()->user()->tareas()->with("category");
 
         // Usamos filled() para verificar que tenga un valor (Alta, Media o Baja)
         // Si es "Todas", filled() devuelve false y no aplica el filtro.
@@ -27,15 +27,17 @@ class TareaController extends Controller
         }
 
         if ($request->filled("ver_categoria")) {
-            $query->where("categoria", $request->ver_categoria);
+            $query->where("category_id", $request->ver_categoria);
         }
 
         $tareas = $query->orderByRaw("FIELD(prioridad, 'Alta', 'Media', 'Baja') ASC")
                     ->orderBy('created_at', 'desc') 
                     ->get();
+
+        $categorias = auth()->user()->categories()->get();
        
 
-        return view('tareas.index', compact('tareas'));
+        return view('tareas.index', compact('tareas',"categorias"));
 
         // return view('hola', compact('tareas'));
     }
@@ -45,22 +47,25 @@ class TareaController extends Controller
     {
         $reglas = [
             "tarea" => 'required|min:3|max:50',
-            "prioridad" => "required|in:Alta,Media,Baja",
-            "categoria" => "required"
+            "prioridad" => "required|in:Alta,Media,Baja", 
+            "category_id" => "nullable|exists:categories,id" //validamos que el id exista en la tabla categories
         ];
 
         $mensajes = [
             'tarea.required' => 'El nombre de la tarea es obligatorio.',
             'tarea.min' => 'La tarea debe tener al menos 3 caracteres.',
             'tarea.max' => 'La tarea es demasiado larga (máximo 50).',
-            'tarea.unique' => 'Esa tarea ya existe en tu lista.',
+            'tarea.unique' => 'Esa tarea ya existe en tu lista.'
+            
+
+
         ];
         $request->validate($reglas, $mensajes);
 
         auth()->user()->tareas()->create([
         "nombre" => $request->tarea,
         "prioridad" => $request->prioridad,
-        "categoria" => $request->categoria,
+        "category_id" => $request->category_id, // Guardamos el ID (nuevo)
         "completada" => false
     ]);
 
@@ -98,7 +103,8 @@ class TareaController extends Controller
     public function edit($id)
     {
         $tarea = auth()->user()->tareas()->findOrFail($id);
-        return view("tareas.editar", compact("tarea"));
+        $categorias = auth()->user()->categories()->get();
+        return view("tareas.editar", compact("tarea","categorias"));
     }
 
 
@@ -113,7 +119,7 @@ class TareaController extends Controller
             // Ignorá esta tarea específica al buscar duplicados
             "nombre" => "required|min:3|max:50|unique:tareas,nombre,".$id,
             "prioridad" => "required|in:Alta,Media,Baja",
-            "categoria" => "required"
+            "category_id" => "nullable|exists:categories,id" // Validamos el ID
         ];
 
         // los mensajes para las validaciones
@@ -121,6 +127,7 @@ class TareaController extends Controller
             'nombre.required' => 'Tenés que ponerle un nombre a la tarea.',
             'nombre.min' => 'El nombre es muy corto (mínimo 3 letras).',
             'nombre.unique' => 'Ya tenés otra tarea con ese mismo nombre.',
+            
         ];
 
         //validamos
@@ -130,7 +137,8 @@ class TareaController extends Controller
         $tarea->update([
             "nombre" => $request->nombre,
             "prioridad" => $request->prioridad,
-            "categoria" => $request->categoria,
+            "category_id" => $request->category_id, // Actualizamos el vínculo
+            // "categoria" => $request->categoria, // Opcional: si seguís usando el texto plano
         ]);
 
         return redirect()->route("tareas.index")->with("success", "Tarea actualizada correctamente");

@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="flex flex-col items-center justify-center min-h-[80vh] px-4">
         <div class="w-full max-w-md bg-white p-10 rounded-[32px] shadow-2xl shadow-slate-200/50 border border-slate-100">
-            
+
             <div class="text-center mb-10">
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-slate-900 text-white rounded-2xl mb-4 shadow-xl shadow-slate-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,39 +34,47 @@
                 {{-- Nombre --}}
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Título de la tarea</label>
-                    <input type="text" name="nombre" value="{{ old('nombre', $tarea->nombre) }}" 
+                    <input type="text" name="nombre" value="{{ old('nombre', $tarea->nombre) }}"
                         class="w-full h-14 px-5 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 focus:ring-0 transition-all outline-none text-slate-700 font-bold text-sm">
                 </div>
 
                 {{-- Selects --}}
                 <div class="grid grid-cols-2 gap-4">
+                    {{-- Prioridad --}}
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Prioridad</label>
                         <div class="relative">
-                            <select name="prioridad" 
+                            <select name="prioridad"
                                 class="appearance-none w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 transition-all outline-none cursor-pointer font-bold text-xs text-slate-600">
-                                <option value="Alta" {{ $tarea->prioridad == 'Alta' ? 'selected' : '' }}>Alta</option>
-                                <option value="Media" {{ $tarea->prioridad == 'Media' ? 'selected' : '' }}> Media</option>
-                                <option value="Baja" {{ $tarea->prioridad == 'Baja' ? 'selected' : '' }}> Baja</option>
+                                <option value="Alta" {{ old('prioridad', $tarea->prioridad) == 'Alta' ? 'selected' : '' }}>Alta</option>
+                                <option value="Media" {{ old('prioridad', $tarea->prioridad) == 'Media' ? 'selected' : '' }}>Media</option>
+                                <option value="Baja" {{ old('prioridad', $tarea->prioridad) == 'Baja' ? 'selected' : '' }}>Baja</option>
                             </select>
                             <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
                             </div>
                         </div>
                     </div>
 
+                    {{-- Categoría --}}
                     <div class="space-y-2">
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Categoría</label>
                         <div class="relative">
-                            <select name="categoria" 
+                            <select name="category_id"
                                 class="appearance-none w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-slate-900 transition-all outline-none cursor-pointer font-bold text-xs text-slate-600">
-                                <option value="General" {{ $tarea->categoria == 'General' ? 'selected' : '' }}>📁 General</option>
-                                <option value="Trabajo" {{ $tarea->categoria == 'Trabajo' ? 'selected' : '' }}>💼 Trabajo</option>
-                                <option value="Estudio" {{ $tarea->categoria == 'Estudio' ? 'selected' : '' }}>📚 Estudio</option>
-                                <option value="Compras" {{ $tarea->categoria == 'Compras' ? 'selected' : '' }}>🛒 Compras</option>
+                                <option value="">Sin categoría</option>
+                                @foreach($categorias as $cat)
+                                    <option value="{{ $cat->id }}" {{ old('category_id', $tarea->category_id) == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
                             </select>
                             <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -74,13 +82,13 @@
 
                 {{-- Acciones --}}
                 <div class="pt-4 space-y-3">
-                    <button type="submit" 
+                    <button type="submit"
                         class="h-14 w-full bg-slate-900 hover:bg-black text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-slate-200 transition-all active:scale-95 cursor-pointer">
                         Guardar Cambios
                     </button>
-                    
-                    <a href="{{ route('tareas.index') }}" 
-                       class="h-12 w-full flex items-center justify-center text-slate-400 hover:text-slate-900 text-[10px] font-black uppercase tracking-widest transition-colors">
+
+                    <a href="{{ route('tareas.index') }}"
+                        class="h-12 w-full flex items-center justify-center text-slate-400 hover:text-slate-900 text-[10px] font-black uppercase tracking-widest transition-colors">
                         Cancelar
                     </a>
                 </div>

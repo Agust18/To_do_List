@@ -17,24 +17,35 @@
     <div class="flex flex-col sm:flex-row gap-2 px-2">
         <div class="relative">
             <select name="ver_prioridad" onchange="this.form.submit()" 
-                    class="appearance-none w-full sm:w-auto pl-3 pr-8 py-2 rounded-lg bg-transparent hover:bg-slate-200/50 text-slate-600 text-sm font-semibold cursor-pointer transition-all outline-none border-none">
+                   class="h-10 pl-3 pr-10 rounded-lg text-center text-xs font-bold bg-slate-50 text-slate-500 border-none outline-none cursor-pointer hover:bg-slate-100 transition-colors appearance-none w-full">
                 <option value="">Prioridad</option>
                 <option value="Alta">Alta</option>
                 <option value="Media">Media</option>
                 <option value="Baja">Baja</option>
             </select>
+             <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
             
         </div>
 
         <div class="relative">
-            <select name="ver_categoria" onchange="this.form.submit()" 
-                    class="appearance-none w-full sm:w-auto pl-3 pr-8 py-2 rounded-lg bg-transparent hover:bg-slate-200/50 text-slate-600 text-sm font-semibold cursor-pointer transition-all outline-none border-none">
-                <option value="">Categoría</option>
-                <option value="General">📁 General</option>
-                <option value="Trabajo">💼 Trabajo</option>
-                <option value="Estudio">📚 Estudio</option>
-                <option value="Compras">🛒 Compras</option>
+            <select name="ver_categoria"
+              class="h-10 pl-3 pr-10 rounded-lg text-center text-xs font-bold bg-slate-50 text-slate-500 border-none outline-none cursor-pointer hover:bg-slate-100 transition-colors appearance-none w-full">
+                <option value="">Todas</option>
+                @foreach($categorias as $categoria)
+                    <option value="{{ $categoria->id }}" {{ request('ver_categoria') == $categoria->id ? 'selected' : '' }}>
+                        {{ $categoria->name }}
+                    </option>
+                @endforeach
             </select>
+             <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 9l-7 7-7-7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
             
         </div>
     </div>
